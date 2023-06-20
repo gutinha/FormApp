@@ -1,18 +1,20 @@
 import 'Revision.dart';
 
 class User {
-  int Id;
-  String Username;
-  String Email;
-  String Name;
-  List<Revision> Revisions;
+  int id;
+  String username;
+  String email;
+  String name;
+  String password;
+  List<Revision> revisions;
 
   User({
-    required this.Id,
-    required this.Username,
-    required this.Email,
-    required this.Name,
-    required this.Revisions,
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.name,
+    required this.password,
+    required this.revisions,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -21,19 +23,20 @@ class User {
     revisionsJson.map((revisionJson) => Revision.fromJson(revisionJson)).toList();
 
     return User(
-      Id: json['id'],
-      Username: json['username'],
-      Email: json['email'],
-      Name: json['name'],
-      Revisions: revisions,
+      id: json['id'],
+      username: json['username'],
+      email: json['email'],
+      name: json['name'],
+      password: json['password'],
+      revisions: revisions,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'id': Id,
-    'username': Username,
-    'email': Email,
-    'name': Name,
-    'revisions': Revisions.map((revision) => revision.toJson()).toList(),
+    'id': id,
+    'username': username,
+    'email': email,
+    'name': name,
+    'revisions': revisions.map((revision) => revision.toJson()).toList(),
   };
 }
