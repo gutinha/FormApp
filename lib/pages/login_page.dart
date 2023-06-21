@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:formapp/repository/AuthService.dart';
 
@@ -10,6 +8,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  AuthService authService = AuthService();
   String? _email;
   String? _password;
 
@@ -17,12 +16,24 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // Implemente a lógica de autenticação aqui, como verificar o email e a senha no banco de dados.
-      if (!result.isNull){
-        Navigator.pushNamed(context, '/home');
-      }
-      else{
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email ou senha inválido')));
-      }
+      authService.validateLogin(_email!, _password!).then((value) {
+        if (value){
+          Navigator.pushReplacementNamed(context, "/home");
+        } else{
+          final snackBar = SnackBar(
+            content: const Text('Login ou senha inválidos'),
+            action: SnackBarAction(
+              textColor: Colors.green,
+              onPressed: () {},
+              label: '',
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      });
+        //Navigator.pushNamed(context, '/home');
+      //  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Email ou senha inválido')));
+
     }
     //return null;
   }

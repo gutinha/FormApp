@@ -2,15 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../dto/register.dart';
-const apiBaseUrl = '';
+const apiBaseUrl = 'http://localhost:3000';
 class AuthService {
-  Future<bool> validateLogin(String login, String password) async {
-    Map<String, String> authRequest = {'login': login, 'password': password};
-    String body = jsonEncode(authRequest);
-
-    final response = await http.post(
-        Uri.parse("$apiBaseUrl/auth/login"),
-        body: body,
+  Future<bool> validateLogin(String email, String password) async {
+    final response = await http.get(
+        Uri.parse("$apiBaseUrl/users?email=$email&password=$password"),
         headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
@@ -23,7 +19,7 @@ class AuthService {
     String body = jsonEncode(request.toMap());
 
     final response = await http.post(
-        Uri.parse("$apiBaseUrl/auth/register"),
+        Uri.parse("$apiBaseUrl/register"),
         body: body,
         headers: {'Content-Type': 'application/json'});
 

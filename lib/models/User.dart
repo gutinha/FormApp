@@ -2,7 +2,6 @@ import 'Revision.dart';
 
 class User {
   int id;
-  String username;
   String email;
   String name;
   String password;
@@ -10,7 +9,6 @@ class User {
 
   User({
     required this.id,
-    required this.username,
     required this.email,
     required this.name,
     required this.password,
@@ -24,7 +22,6 @@ class User {
 
     return User(
       id: json['id'],
-      username: json['username'],
       email: json['email'],
       name: json['name'],
       password: json['password'],
@@ -34,7 +31,6 @@ class User {
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'username': username,
     'email': email,
     'name': name,
     'revisions': revisions.map((revision) => revision.toJson()).toList(),
