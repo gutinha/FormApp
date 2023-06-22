@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:formapp/dto/schedule.dart';
+import 'package:formapp/global/GlobalUser.dart';
+import 'package:formapp/repository/RevisionService.dart';
 
 class SchedulePage extends StatefulWidget {
   @override
@@ -8,7 +11,8 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
-
+  String _description = '';
+  RevisionService revisionService = RevisionService();
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -23,16 +27,28 @@ class _SchedulePageState extends State<SchedulePage> {
     }
   }
 
-  void _validateAndSchedule() {
+  void _validateAndSchedule() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Implemente a lógica de agendamento aqui, como salvar a data no banco de dados.
-      Navigator.pushNamed(context, '/home');
+      ScheduleRequest request = ScheduleRequest(description: _description,
+          dataRevisao: _selectedDate as DateTime,
+          done: false,
+          idUser: GlobalUser.userLogado.id);
+      revisionService.schedule(request).then((value) =>
+      {
+        if (value) {
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/home', (route) => false)
+        } else
+          {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Erro ao agendar revisão')))
+          }
+      });
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+    @override
+    Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Agendar Revisão'),
@@ -63,6 +79,18 @@ class _SchedulePageState extends State<SchedulePage> {
                     _selectDate(context);
                   },
                 ),
+                TextFormField(
+                  decoration: InputDecoration(hintText: 'Descrição'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira uma descrição';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _description = value!;
+                  },
+                ),
                 ElevatedButton(
                   child: Text('Agendar'),
                   onPressed: _validateAndSchedule,
@@ -75,3 +103,4 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 }
+

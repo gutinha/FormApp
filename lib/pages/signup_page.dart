@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:formapp/dto/register.dart';
+import 'package:formapp/repository/AuthService.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -10,11 +12,15 @@ class _SignupPageState extends State<SignupPage> {
   String? _email;
   String? _password;
   String? _confirmPassword;
+  String? _name;
+  AuthService authService = new AuthService();
 
   void _validateAndSignUp() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // Implemente a lógica de cadastro aqui, como salvar o email e a senha no banco de dados.
+      RegisterRequest request = RegisterRequest(_name!, _email!, _password!);
+      authService.register(request);
       Navigator.pop(context);
     }
   }
@@ -44,6 +50,28 @@ class _SignupPageState extends State<SignupPage> {
                   },
                   decoration: const InputDecoration(
                       hintText: "Email",
+                      hintStyle: TextStyle(color: Colors.black),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide.none),
+                      fillColor: Color.fromARGB(22, 68, 137, 255),
+                      filled: true,
+                      prefixIcon: Icon(Icons.person)),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  onSaved: (value) => _name = value,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Por favor, insira um nome';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                      hintText: "Nome",
                       hintStyle: TextStyle(color: Colors.black),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
